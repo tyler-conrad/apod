@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart' as m;
 
+import 'src/log.dart' as l;
 import 'src/widget/shared.dart' as ws;
 import 'src/controller.dart' as c;
 import 'src/widget/scaffold.dart' as s;
@@ -19,6 +20,7 @@ import 'src/tz/timezone_stub.dart'
 Future<void> main() async {
   await timezone.setup();
   await c.buildController();
+
   m.runApp(
     m.MaterialApp(
       title: 'NASA Astronomy Picture of the Day',
@@ -33,6 +35,7 @@ Future<void> main() async {
         m.RouteSettings settings,
       ) {
         var route = settings.name!;
+        l.logger.i('Switching to route: $route');
         ws.routeHistory.push(route);
         switch (route) {
           case ws.RouteStringConstants.populateDatabase:

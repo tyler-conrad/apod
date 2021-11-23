@@ -25,9 +25,8 @@ class MediaMetadataController {
     var iterating = iterator.moveNext();
     while (iterating) {
       final currentMonthAndYear =
-          mmbm.MonthAndYear.fromDateTime(dateTime: iterator.current.date);
-      var nextMonthAndYear =
-          mmbm.MonthAndYear.fromDateTime(dateTime: iterator.current.date);
+          mmbm.MonthAndYear(dateTime: iterator.current.date);
+      var nextMonthAndYear = mmbm.MonthAndYear(dateTime: iterator.current.date);
       final List<mm.MediaMetadata> mediaMetadataList = [];
       while (currentMonthAndYear == nextMonthAndYear) {
         mediaMetadataList.add(iterator.current);
@@ -35,8 +34,7 @@ class MediaMetadataController {
         if (!iterating) {
           break;
         }
-        nextMonthAndYear =
-            mmbm.MonthAndYear.fromDateTime(dateTime: iterator.current.date);
+        nextMonthAndYear = mmbm.MonthAndYear(dateTime: iterator.current.date);
       }
       yield mmbm.MediaMetadataByMonth(
           monthAndYear: currentMonthAndYear,
@@ -44,23 +42,21 @@ class MediaMetadataController {
     }
   }
 
+  bool isValidImage({required mm.MediaMetadata mediaMetadata}) {
+    return mediaMetadata.mediaType != mm.MediaType.video &&
+        mediaMetadata.url != null &&
+        mediaMetadata.hdUrl != null;
+  }
+
   Iterable<mm.MediaMetadata> fromLatestBackward() {
     return _backward().where(
-      (mediaMetadata) {
-        return mediaMetadata.mediaType != mm.MediaType.video &&
-            mediaMetadata.url != null &&
-            mediaMetadata.hdUrl != null;
-      },
+      (mediaMetadata) => isValidImage(mediaMetadata: mediaMetadata),
     );
   }
 
   Iterable<mm.MediaMetadata> fromEarliestForward() {
     return _forward().where(
-      (mediaMetadata) {
-        return mediaMetadata.mediaType != mm.MediaType.video &&
-            mediaMetadata.url != null &&
-            mediaMetadata.hdUrl != null;
-      },
+      (mediaMetadata) => isValidImage(mediaMetadata: mediaMetadata),
     );
   }
 

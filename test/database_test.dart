@@ -94,6 +94,7 @@ void main() async {
         'fromDateTime() returns a MediaMetadata value when the DateTime key is present',
         () async {
       var dt = DateTime(2021, 1, 1);
+
       db!.put(
           metadata: mm.MediaMetadata(
               title: 'title',
@@ -103,8 +104,10 @@ void main() async {
               url: 'url',
               hdUrl: 'hdUrl',
               mediaType: mm.MediaType.image));
+
       var metadata = db!.fromDateTime(
           dateTime: tz.TZDateTime(s.timeZone, dt.year, dt.month, dt.day));
+
       t.expect(metadata.title, t.equals('title'));
       t.expect(metadata.dateTime, t.equals(dt));
       t.expect(metadata.copyright, t.equals('copyright'));

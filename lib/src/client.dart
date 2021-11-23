@@ -122,7 +122,7 @@ class Client {
       {required tz.TZDateTime date}) async* {
     for (var chunk in s.chunks<Uri>(
       list: uriIterable(startDate: date).toList(),
-      chunkSize: 10,
+      chunkSize: 20,
     )) {
       var responses =
           await Future.wait(chunk.map((uri) => client.get(uri)).toList());

@@ -10,14 +10,9 @@ class MonthAndYear extends eq.Equatable {
   @override
   List<int> get props => [month, year];
 
-  factory MonthAndYear.fromDateTime({required tz.TZDateTime dateTime}) {
-    return MonthAndYear(month: dateTime.month, year: dateTime.year);
-  }
-
-  const MonthAndYear({
-    required this.month,
-    required this.year,
-  });
+  MonthAndYear({required tz.TZDateTime dateTime})
+      : month = dateTime.month,
+        year = dateTime.year;
 }
 
 class MediaMetadataByMonth {

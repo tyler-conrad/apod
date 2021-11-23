@@ -127,8 +127,8 @@ class _ApodScaffoldState extends m.State<ApodScaffold> with m.RouteAware {
             break;
 
           default:
-            throw Exception(
-              'Unsupported route: ${route.settings.name}',
+            throw ws.InvalidRouteException(
+              'Invalid route: ${route.settings.name}',
             );
         }
         return true;
