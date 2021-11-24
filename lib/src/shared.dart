@@ -33,7 +33,7 @@ tz.TZDateTime parseDate({required String dateString}) {
   return tz.TZDateTime(s.timeZone, year, month, day);
 }
 
-final timeZone = tz.getLocation('America/Chicago');
+final tz.Location timeZone = tz.getLocation('America/Chicago');
 
 tz.TZDateTime timeZoneNow() {
   return tz.TZDateTime.now(timeZone);

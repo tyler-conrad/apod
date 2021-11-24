@@ -81,17 +81,18 @@ class Client {
           offset: numMediaMetadataPerCall)
     ]).map((dateTimePair) {
       return Uri(
-          scheme: scheme,
-          host: host,
-          port: port,
-          path: path,
-          queryParameters: {
-            'thumbs': 'True',
-            'start_date':
-                s.yearMonthDayStringFromDateTime(dateTime: dateTimePair[0]),
-            'end_date':
-                s.yearMonthDayStringFromDateTime(dateTime: dateTimePair[1])
-          });
+        scheme: scheme,
+        host: host,
+        port: port,
+        path: path,
+        queryParameters: {
+          'thumbs': 'True',
+          'start_date':
+              s.yearMonthDayStringFromDateTime(dateTime: dateTimePair[0]),
+          'end_date':
+              s.yearMonthDayStringFromDateTime(dateTime: dateTimePair[1])
+        },
+      );
     }).toList();
     for (final uri in uriList) {
       yield uri;
@@ -102,7 +103,8 @@ class Client {
       {required db.Database database, int dayOffset = 1}) async {
     NowAndFutureDay nafd = NowAndFutureDay(dayOffset: dayOffset);
     await async.Future.delayed(nafd.futureDay.difference(nafd.now));
-    var resp = await client.get(Uri(
+    var resp = await client.get(
+      Uri(
         scheme: scheme,
         host: host,
         port: port,
@@ -110,7 +112,9 @@ class Client {
         queryParameters: {
           'thumbs': 'True',
           'date': s.yearMonthDayStringFromDateTime(dateTime: nafd.futureDay)
-        }));
+        },
+      ),
+    );
     var metadata = mm.MediaMetadata.fromJson(_decodeJsonMap(resp: resp));
     await database.put(metadata: metadata);
     await database.putLatestMediaMetadataDateTime(latest: metadata.date);
@@ -120,7 +124,7 @@ class Client {
 
   Stream<mm.MediaMetadata> _allMediaMetadataAfterDateStream(
       {required tz.TZDateTime date}) async* {
-    for (var chunk in s.chunks<Uri>(
+    for (final chunk in s.chunks<Uri>(
       list: uriIterable(startDate: date).toList(),
       chunkSize: 20,
     )) {
