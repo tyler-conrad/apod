@@ -52,11 +52,12 @@ machine that its running on to determine date changes and the availability of ne
 change the Location object to point at a timezone that matches your system time.  A list of available supported timezone
 location codes is [here](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones) (timezones in green should be supported).
 
-The code has the variable chunkSize in
-[client.dart](lib/src/client.dart) line 125 that controls the number of concurrent requests to the server - if your network
-connection is slow or you are using the public API you can update this variable to reduce the rate of network requests:
+The code has the variable chunkSize in [client.dart](lib/src/client.dart) that controls the number of concurrent
+requests to the server - if your network connection is slow or you are using the public API you can update this variable
+to reduce the rate of network requests:
 
 ```dart
+// line 125
 for (final chunk in s.chunks<Uri>(
   list: uriIterable(startDate: date).toList(),
   chunkSize: 20,
