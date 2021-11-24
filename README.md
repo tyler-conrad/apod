@@ -63,6 +63,15 @@ for (final chunk in s.chunks<Uri>(
 )) {
 ```
 
+If you are having trouble getting the initial database population to complete, prepopulated Hive box files are available
+in the assets/db directory.  To use them copy the following files to the ~/Documents directory:
+ - latest_media_metadata_box_name.hive
+ - media_metadata_box_name.hive
+ - media_metadata_box_name.lock
+
+Once the files have been copied only image metadata that has been added more currently than 11/23/21 will be added when
+app is started using the update feature.
+
 ##Features
 
 The app uses the Material Design based widgets provided by the Flutter project.
