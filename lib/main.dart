@@ -12,7 +12,6 @@ import 'src/widget/page_view_swiper.dart' as pvs;
 import 'src/widget/gallery.dart' as g;
 import 'src/widget/single_image_view.dart' as siv;
 import 'src/widget/interactive_viewer.dart' as iv;
-
 import 'src/tz/timezone_stub.dart'
     if (dart.library.io) 'src/tz/timezone_flutter.dart'
     if (dart.library.js) 'src/tz/timezone_web.dart' as timezone;
