@@ -2,7 +2,7 @@
 
 Flutter App to browse images provided by NASA on a daily basis.
 
-![This is an image](assets/demo.gif)
+![Demo Gif](assets/demo.gif)
 
 ## Getting Started
 
