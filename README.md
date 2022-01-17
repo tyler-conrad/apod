@@ -119,7 +119,7 @@ pip install -r requirements.txt -t lib
 PYTHONPATH=./lib python application.py
 ```
 
-If the default setup for the server aboe does not work for you there are other installation options outlined in the
+If the default setup for the server above does not work for you there are other installation options outlined in the
 readme for the apod-api project.
 
 1. Instructions for installing Flutter for Linux are [here](https://docs.flutter.dev/get-started/install/linux)
