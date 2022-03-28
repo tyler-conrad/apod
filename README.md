@@ -73,7 +73,7 @@ in the assets/db directory.  To use them copy the following files to the ~/Docum
 Once the files have been copied only image metadata that has been added more currently than 11/23/21 will be added when
 app is started using the update feature.
 
-##Features
+## Features
 
 The app uses the Material Design based widgets provided by the Flutter project.
  - Uses the local key-value store database [Hive](https://github.com/hivedb/hive) to persist metadata about images.
@@ -93,7 +93,7 @@ and also provides a link to a pannable/zoomable InteractiveViewer widget for all
    - Gallery widget which displays a scrollable grid of thumbnails sorted by month with the ability to navigate to the
    image details by tapping.
 
-##Running
+## Running
 
 First setup the [apod-api](https://github.com/nasa/apod-api) server to run on localhost:5000.
 
