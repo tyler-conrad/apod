@@ -160,12 +160,16 @@ flutter test
 flutter run -d linux
 ```
 
-Tested on:
- - Ubuntu 20.04.3 LTS
- - Flutter 2.8.0-3.2.pre • channel beta • https://github.com/flutter/flutter.git
- - Framework • revision 2901cd7208 (5 days ago) • 2021-11-18 11:15:09 -0800
- - Engine • revision bcc2b7f12c
- - Tools • Dart 2.15.0 (build 2.15.0-268.18.beta)
+## Tested on
+Platform:
+- Ubuntu 20.04.4 LTS
+
+Flutter:
+ - Flutter 2.13.0-0.1.pre • channel beta • https://github.com/flutter/flutter.git
+ - Framework • revision 13a2fb10b8 (8 days ago) • 2022-04-12 15:34:25 -0500
+ - Engine • revision 499984f99c
+ - Tools • Dart 2.17.0 (build 2.17.0-266.1.beta) • DevTools 2.12.1
+
 
 
 
