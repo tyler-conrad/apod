@@ -1,4 +1,3 @@
-import 'dart:io' as io;
 import 'dart:typed_data' as td;
 
 import 'package:flutter/material.dart' as m;
@@ -6,10 +5,8 @@ import 'package:flutter/material.dart' as m;
 import '../shared.dart' as s;
 import '../media_metadata.dart' as mm;
 
-final m.Image placeholder = m.Image.file(
-  io.File(
-    'assets/placeholder.jpg',
-  ),
+final m.Image placeholder = m.Image.asset(
+  'assets/placeholder.jpg',
   alignment: m.Alignment.center,
   fit: m.BoxFit.cover,
   width: double.infinity,

@@ -45,7 +45,7 @@ m.EdgeInsets edgeInsets24 = const m.EdgeInsets.all(
 m.DecoratedBox buildBox({required m.ThemeData theme, required m.Widget child}) {
   return m.DecoratedBox(
     decoration: m.BoxDecoration(
-      color: theme.backgroundColor,
+      color: theme.primaryColor,
       borderRadius: boxBorderRadius,
       boxShadow: boxShadows(),
     ),

@@ -68,7 +68,7 @@ class Client {
   static const int numMediaMetadataPerCall = 100;
   static const scheme = 'http';
   static const host = 'localhost';
-  static const port = 5000;
+  static const port = 8000;
   static const path = '/v1/apod';
 
   final retry.RetryClient client;
@@ -131,7 +131,13 @@ class Client {
       var responses =
           await Future.wait(chunk.map((uri) => client.get(uri)).toList());
       for (final resp in responses) {
-        for (final metadata in _decodeJsonList(resp: resp)) {
+        List<dynamic> metadataList;
+        try {
+          metadataList = _decodeJsonList(resp: resp);
+        } on TypeError {
+          continue;
+        }
+        for (final metadata in metadataList) {
           yield mm.MediaMetadata.fromJson(metadata);
         }
       }

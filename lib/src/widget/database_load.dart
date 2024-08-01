@@ -66,9 +66,9 @@ class _DatabaseLoadState extends m.State<DatabaseLoad> {
               child: m.ValueListenableBuilder(
                 valueListenable: _progressNotifier,
                 builder: (
-                  _context,
+                  context,
                   double loadProgress,
-                  _child,
+                  child,
                 ) {
                   return m.LinearProgressIndicator(
                     color: theme.primaryColorDark,
@@ -94,12 +94,11 @@ class DatabaseLoad extends m.StatefulWidget {
   m.State<m.StatefulWidget> createState() => _DatabaseLoadState();
 
   const DatabaseLoad({
-    m.Key? key,
+    super.key,
     required String message,
     required String buttonText,
     required Stream<double> progress,
   })  : _message = message,
         _buttonText = buttonText,
-        _progress = progress,
-        super(key: key);
+        _progress = progress;
 }

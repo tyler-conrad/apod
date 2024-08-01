@@ -70,7 +70,6 @@ class VerticalScrollBrowser extends m.StatefulWidget {
   m.State<m.StatefulWidget> createState() => _VerticalScrollBrowserState();
 
   const VerticalScrollBrowser(
-      {m.Key? key, required Iterable<mm.MediaMetadata> mediaMetadataIterable})
-      : _mediaMetadataIterable = mediaMetadataIterable,
-        super(key: key);
+      {super.key, required Iterable<mm.MediaMetadata> mediaMetadataIterable})
+      : _mediaMetadataIterable = mediaMetadataIterable;
 }

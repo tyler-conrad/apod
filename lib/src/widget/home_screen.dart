@@ -76,7 +76,7 @@ class HomeScreenMenu extends m.StatelessWidget {
     );
   }
 
-  const HomeScreenMenu({m.Key? key}) : super(key: key);
+  const HomeScreenMenu({super.key});
 }
 
 class HomeScreen extends m.StatelessWidget {
@@ -88,5 +88,5 @@ class HomeScreen extends m.StatelessWidget {
     );
   }
 
-  const HomeScreen({m.Key? key}) : super(key: key);
+  const HomeScreen({super.key});
 }

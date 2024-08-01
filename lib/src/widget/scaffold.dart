@@ -195,7 +195,7 @@ class _ApodScaffoldState extends m.State<ApodScaffold> with m.RouteAware {
               drawer: m.ValueListenableBuilder<d.DrawerState>(
                 valueListenable: _activeDrawerState,
                 builder: (
-                  _context,
+                  context,
                   activeDrawerState,
                   child,
                 ) {
@@ -226,8 +226,7 @@ class ApodScaffold extends m.StatefulWidget {
   m.State<m.StatefulWidget> createState() => _ApodScaffoldState();
 
   const ApodScaffold(
-      {m.Key? key, required double leadingWidth, required m.Widget child})
+      {super.key, required double leadingWidth, required m.Widget child})
       : _leadingWidth = leadingWidth,
-        _child = child,
-        super(key: key);
+        _child = child;
 }

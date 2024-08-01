@@ -43,10 +43,9 @@ class InteractiveViewer extends m.StatelessWidget {
   }
 
   const InteractiveViewer(
-      {m.Key? key,
+      {super.key,
       required mm.MediaMetadata mediaMetadata,
       required String previousRoute})
       : _previousRoute = previousRoute,
-        _mediaMetadata = mediaMetadata,
-        super(key: key);
+        _mediaMetadata = mediaMetadata;
 }

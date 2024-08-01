@@ -55,12 +55,6 @@ class ApodDrawer extends m.StatelessWidget {
         builder: (m.BuildContext context) {
           return m.MaterialButton(
             minWidth: double.infinity,
-            child: m.Icon(
-              iconFromDrawerState(
-                drawerState: thisDrawerState,
-              ),
-              size: 96.0,
-            ),
             color: activeDrawerState == thisDrawerState
                 ? theme.highlightColor
                 : theme.primaryColor,
@@ -70,6 +64,12 @@ class ApodDrawer extends m.StatelessWidget {
                     ws.navigatorKey.currentState?.pushNamed(routeToPush);
                     m.Scaffold.of(context).openEndDrawer();
                   },
+            child: m.Icon(
+              iconFromDrawerState(
+                drawerState: thisDrawerState,
+              ),
+              size: 96.0,
+            ),
           );
         },
       ),
@@ -151,7 +151,6 @@ class ApodDrawer extends m.StatelessWidget {
     );
   }
 
-  const ApodDrawer({m.Key? key, required DrawerState activeDrawerState})
-      : _activeDrawerState = activeDrawerState,
-        super(key: key);
+  const ApodDrawer({super.key, required DrawerState activeDrawerState})
+      : _activeDrawerState = activeDrawerState;
 }

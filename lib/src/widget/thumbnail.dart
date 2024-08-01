@@ -66,8 +66,7 @@ class Thumbnail extends m.StatefulWidget {
   m.State<m.StatefulWidget> createState() => _ThumbnailState();
 
   const Thumbnail({
-    m.Key? key,
+    super.key,
     required mm.MediaMetadata mediaMetadata,
-  })  : _mediaMetadata = mediaMetadata,
-        super(key: key);
+  }) : _mediaMetadata = mediaMetadata;
 }

@@ -1,4 +1,3 @@
-import 'dart:io' as io;
 import 'dart:collection' as c;
 
 import 'package:flutter/material.dart' as m;
@@ -7,8 +6,8 @@ import 'package:timezone/timezone.dart' as tz;
 import 'shared.dart' as s;
 import 'media_metadata_by_month.dart' as mmbm;
 
-final m.Image nasaLogo = m.Image.file(
-  io.File('assets/nasa_logo.png'),
+final m.Image nasaLogo = m.Image.asset(
+  'assets/nasa_logo.png',
   alignment: m.Alignment.center,
   fit: m.BoxFit.cover,
   width: double.infinity,

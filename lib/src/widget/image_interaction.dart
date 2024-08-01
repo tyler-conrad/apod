@@ -160,7 +160,7 @@ class _ImageInteractionState extends m.State<ImageInteraction>
                       m.MaterialButton(
                         color: _explanationButtonActive.value
                             ? theme.highlightColor
-                            : theme.backgroundColor,
+                            : theme.primaryColor,
                         child: const m.Icon(
                           m.Icons.text_snippet,
                         ),
@@ -177,12 +177,15 @@ class _ImageInteractionState extends m.State<ImageInteraction>
                         ),
                         onPressed: () async {
                           ws.navigatorKey.currentState?.pushNamed(
-                            (await ws.navigatorKey.currentState?.pushNamed(
-                                    ws.RouteStringConstants.interactiveViewer,
-                                    arguments: ws.PushArguments(
-                                        mediaMetadata:
-                                            widget._mediaMetadata)) as ws
-                                    .PushArguments)
+                            (await ws
+                                        .navigatorKey.currentState
+                                        ?.pushNamed(
+                                            ws.RouteStringConstants
+                                                .interactiveViewer,
+                                            arguments: ws.PushArguments(
+                                                mediaMetadata:
+                                                    widget._mediaMetadata))
+                                    as ws.PushArguments)
                                 .previousRoute!,
                             arguments: ws.PushArguments(
                               mediaMetadata: widget._mediaMetadata,
@@ -270,7 +273,7 @@ class ImageInteraction extends m.StatefulWidget {
   @override
   m.State<m.StatefulWidget> createState() => _ImageInteractionState();
   const ImageInteraction({
-    m.Key? key,
+    super.key,
     required bool showDate,
     required m.ValueNotifier<bool> buttonBoxActive,
     required mm.MediaMetadata mediaMetadata,
@@ -278,6 +281,5 @@ class ImageInteraction extends m.StatefulWidget {
   })  : _showDate = showDate,
         _buttonBoxActive = buttonBoxActive,
         _mediaMetadata = mediaMetadata,
-        _child = child,
-        super(key: key);
+        _child = child;
 }

@@ -192,9 +192,9 @@ class _SlideShowState extends m.State<SlideShow>
       child: m.ValueListenableBuilder<SlideShowImageForegroundAndBackground>(
         valueListenable: _foregroundAndBackground,
         builder: (
-          m.BuildContext _context,
+          m.BuildContext context,
           SlideShowImageForegroundAndBackground ssifgab,
-          m.Widget? _child,
+          m.Widget? child,
         ) {
           return ssifgab.foreground;
         },
@@ -251,9 +251,9 @@ class _SlideShowState extends m.State<SlideShow>
                 m.ValueListenableBuilder<SlideShowImageForegroundAndBackground>(
               valueListenable: _foregroundAndBackground,
               builder: (
-                m.BuildContext _context,
+                m.BuildContext context,
                 SlideShowImageForegroundAndBackground ssifgab,
-                m.Widget? _child,
+                m.Widget? child,
               ) {
                 return ssifgab.background == null
                     ? ws.placeholder
@@ -314,9 +314,9 @@ class _SlideShowState extends m.State<SlideShow>
           m.ValueListenableBuilder<String>(
             valueListenable: _imageCopyright,
             builder: (
-              m.BuildContext _context,
+              m.BuildContext context,
               String copyright,
-              m.Widget? _child,
+              m.Widget? child,
             ) {
               return m.Positioned(
                 right: _copyrightInset,
@@ -345,10 +345,9 @@ class SlideShow extends m.StatefulWidget {
   m.State<m.StatefulWidget> createState() => _SlideShowState();
 
   const SlideShow(
-      {m.Key? key,
+      {super.key,
       required bool lookupByDateMode,
       hs.HomeScreenMenu? homeScreenMenu})
       : _lookupByDateMode = lookupByDateMode,
-        _homeScreenMenu = homeScreenMenu,
-        super(key: key);
+        _homeScreenMenu = homeScreenMenu;
 }

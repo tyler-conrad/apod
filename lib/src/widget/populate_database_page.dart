@@ -50,8 +50,8 @@ class _PopulateDatabasePageState extends m.State<PopulateDatabasePage> {
   m.Widget build(m.BuildContext context) {
     return m.ValueListenableBuilder<PopulateDatabasePageStrategy>(
       valueListenable: populationStrategy,
-      builder: (m.BuildContext _context,
-          PopulateDatabasePageStrategy populationStrategy, m.Widget? _child) {
+      builder: (m.BuildContext context,
+          PopulateDatabasePageStrategy populationStrategy, m.Widget? child) {
         return m.Stack(
           children: [
             s.nasaLogo,
@@ -92,5 +92,5 @@ class PopulateDatabasePage extends m.StatefulWidget {
   @override
   m.State<PopulateDatabasePage> createState() => _PopulateDatabasePageState();
 
-  const PopulateDatabasePage({m.Key? key}) : super(key: key);
+  const PopulateDatabasePage({super.key});
 }

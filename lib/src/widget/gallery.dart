@@ -68,9 +68,8 @@ class Gallery extends m.StatelessWidget {
   }
 
   Gallery(
-      {m.Key? key,
-      required Iterable<mmbm.MediaMetadataByMonth> mediaMetadataByMonth})
-      : super(key: key) {
+      {super.key,
+      required Iterable<mmbm.MediaMetadataByMonth> mediaMetadataByMonth}) {
     _mediaMetadataByMonthFromIndex = mediaMetadataByMonth.toList().asMap();
   }
 }

@@ -179,12 +179,11 @@ class SingleImageView extends m.StatefulWidget {
   @override
   m.State<m.StatefulWidget> createState() => _SingleImageViewState();
   const SingleImageView({
-    m.Key? key,
+    super.key,
     required double headerHeight,
     required mm.MediaMetadata mediaMetadata,
     double? fillHeightSize,
   })  : _fillHeightSize = fillHeightSize,
         _headerHeight = headerHeight,
-        _mediaMetadata = mediaMetadata,
-        super(key: key);
+        _mediaMetadata = mediaMetadata;
 }
