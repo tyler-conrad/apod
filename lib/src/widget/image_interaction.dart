@@ -5,126 +5,149 @@ import '../media_metadata.dart' as mm;
 import 'shared.dart' as ws;
 import 'appearance.dart' as a;
 
+/// A widget for displaying an image with interaction options.
+///
+/// The image can be zoomed in, and the explanation and date can be displayed.
+class ImageInteraction extends m.StatefulWidget {
+  final bool _showDate;
+  final m.ValueNotifier<bool> _buttonBoxActive;
+  final mm.MediaMetadata _mediaMetadata;
+  final m.Widget _child;
+
+  @override
+  m.State<m.StatefulWidget> createState() => _ImageInteractionState();
+  const ImageInteraction({
+    super.key,
+    required bool showDate,
+    required m.ValueNotifier<bool> buttonBoxActive,
+    required mm.MediaMetadata mediaMetadata,
+    required m.Widget child,
+  })  : _showDate = showDate,
+        _buttonBoxActive = buttonBoxActive,
+        _mediaMetadata = mediaMetadata,
+        _child = child;
+}
+
 class _ImageInteractionState extends m.State<ImageInteraction>
     with m.TickerProviderStateMixin {
-  final int _fadeTimeMillis = 500;
-  final double _buttonBoxInset = 32.0;
-  final double _explanationBoxWidth = 512.0;
-  final double _titleScaleFactor = 1.5;
-  final double _dateInset = 32.0;
+  final int fadeTimeMillis = 500;
+  final double buttonBoxInset = 32.0;
+  final double explanationBoxWidth = 512.0;
+  final double titleScaleFactor = 1.5;
+  final double dateInset = 32.0;
 
-  late final m.AnimationController _buttonBoxFadeController;
-  late final m.Animation<double> _buttonBoxFadeAnimation;
+  late final m.AnimationController buttonBoxFadeController;
+  late final m.Animation<double> buttonBoxFadeAnimation;
 
-  late final m.AnimationController _explanationBackgroundFadeController;
-  late final m.Animation<double> _explanationBackgroundFadeAnimation;
+  late final m.AnimationController explanationBackgroundFadeController;
+  late final m.Animation<double> explanationBackgroundFadeAnimation;
 
-  late final m.AnimationController _textFadeController;
-  late final m.Animation<double> _textFadeAnimation;
+  late final m.AnimationController textFadeController;
+  late final m.Animation<double> textFadeAnimation;
 
-  final m.ValueNotifier<bool> _explanationButtonActive = m.ValueNotifier(false);
+  final m.ValueNotifier<bool> explanationButtonActive = m.ValueNotifier(false);
 
-  bool _showButtonBox = false;
-  bool _showExplanationAndDateText = false;
+  bool showButtonBox = false;
+  bool showExplanationAndDateText = false;
 
   @override
   void initState() {
     super.initState();
-    _buttonBoxFadeController = m.AnimationController(
+    buttonBoxFadeController = m.AnimationController(
       duration: Duration(
-        milliseconds: _fadeTimeMillis,
+        milliseconds: fadeTimeMillis,
       ),
       vsync: this,
     )..addListener(
         () {
-          if (_buttonBoxFadeController.value < 0.01) {
+          if (buttonBoxFadeController.value < 0.01) {
             setState(() {
-              _showButtonBox = false;
+              showButtonBox = false;
             });
           } else {
             setState(() {
-              _showButtonBox = true;
+              showButtonBox = true;
             });
           }
         },
       );
 
-    _buttonBoxFadeAnimation = m.Tween<double>(
+    buttonBoxFadeAnimation = m.Tween<double>(
       begin: 0.0,
       end: 1.0,
     ).animate(
       m.CurvedAnimation(
-        parent: _buttonBoxFadeController,
+        parent: buttonBoxFadeController,
         curve: m.Curves.easeIn,
       ),
     );
 
-    _explanationBackgroundFadeController = m.AnimationController(
+    explanationBackgroundFadeController = m.AnimationController(
       duration: Duration(
-        milliseconds: _fadeTimeMillis,
+        milliseconds: fadeTimeMillis,
       ),
       vsync: this,
     )..addListener(
         () {
-          if (_explanationBackgroundFadeController.value < 0.01) {
+          if (explanationBackgroundFadeController.value < 0.01) {
             setState(() {
-              _showExplanationAndDateText = false;
+              showExplanationAndDateText = false;
             });
           } else {
             setState(() {
-              _showExplanationAndDateText = true;
+              showExplanationAndDateText = true;
             });
           }
         },
       );
 
-    _explanationBackgroundFadeAnimation = m.Tween<double>(
+    explanationBackgroundFadeAnimation = m.Tween<double>(
       begin: 0.0,
       end: 0.75,
     ).animate(
       m.CurvedAnimation(
-        parent: _explanationBackgroundFadeController,
+        parent: explanationBackgroundFadeController,
         curve: m.Curves.easeIn,
       ),
     );
 
-    _textFadeController = m.AnimationController(
+    textFadeController = m.AnimationController(
       duration: Duration(
-        milliseconds: _fadeTimeMillis,
+        milliseconds: fadeTimeMillis,
       ),
       vsync: this,
     );
 
-    _textFadeAnimation = m.Tween<double>(
+    textFadeAnimation = m.Tween<double>(
       begin: 0.0,
       end: 1.0,
     ).animate(
       m.CurvedAnimation(
-        parent: _textFadeController,
+        parent: textFadeController,
         curve: m.Curves.easeIn,
       ),
     );
 
     widget._buttonBoxActive.addListener(() {
       if (widget._buttonBoxActive.value) {
-        _buttonBoxFadeController.forward(from: _buttonBoxFadeController.value);
+        buttonBoxFadeController.forward(from: buttonBoxFadeController.value);
       } else {
-        _buttonBoxFadeController.reverse(from: _buttonBoxFadeController.value);
+        buttonBoxFadeController.reverse(from: buttonBoxFadeController.value);
       }
-      _explanationButtonActive.value = false;
+      explanationButtonActive.value = false;
     });
 
-    _explanationButtonActive.addListener(
+    explanationButtonActive.addListener(
       () {
-        if (_explanationButtonActive.value == true) {
-          _explanationBackgroundFadeController.forward(
-              from: _explanationBackgroundFadeController.value);
-          _textFadeController.forward(
-              from: _explanationBackgroundFadeController.value);
+        if (explanationButtonActive.value == true) {
+          explanationBackgroundFadeController.forward(
+              from: explanationBackgroundFadeController.value);
+          textFadeController.forward(
+              from: explanationBackgroundFadeController.value);
         } else {
-          _explanationBackgroundFadeController.reverse(
-              from: _explanationBackgroundFadeController.value);
-          _textFadeController.reverse(from: _textFadeController.value);
+          explanationBackgroundFadeController.reverse(
+              from: explanationBackgroundFadeController.value);
+          textFadeController.reverse(from: textFadeController.value);
         }
       },
     );
@@ -132,10 +155,10 @@ class _ImageInteractionState extends m.State<ImageInteraction>
 
   @override
   void dispose() {
-    _explanationButtonActive.dispose();
-    _textFadeController.dispose();
-    _explanationBackgroundFadeController.dispose();
-    _buttonBoxFadeController.dispose();
+    explanationButtonActive.dispose();
+    textFadeController.dispose();
+    explanationBackgroundFadeController.dispose();
+    buttonBoxFadeController.dispose();
     super.dispose();
   }
 
@@ -145,12 +168,12 @@ class _ImageInteractionState extends m.State<ImageInteraction>
     return m.Stack(
       children: [
         widget._child,
-        if (_showButtonBox)
+        if (showButtonBox)
           m.Positioned(
-            top: _buttonBoxInset,
-            right: _buttonBoxInset,
+            top: buttonBoxInset,
+            right: buttonBoxInset,
             child: m.FadeTransition(
-              opacity: _buttonBoxFadeAnimation,
+              opacity: buttonBoxFadeAnimation,
               child: a.buildBox(
                 theme: theme,
                 child: m.Padding(
@@ -158,7 +181,7 @@ class _ImageInteractionState extends m.State<ImageInteraction>
                   child: m.Row(
                     children: [
                       m.MaterialButton(
-                        color: _explanationButtonActive.value
+                        color: explanationButtonActive.value
                             ? theme.highlightColor
                             : theme.primaryColor,
                         child: const m.Icon(
@@ -166,8 +189,8 @@ class _ImageInteractionState extends m.State<ImageInteraction>
                         ),
                         onPressed: () {
                           setState(() {
-                            _explanationButtonActive.value =
-                                !_explanationButtonActive.value;
+                            explanationButtonActive.value =
+                                !explanationButtonActive.value;
                           });
                         },
                       ),
@@ -177,15 +200,11 @@ class _ImageInteractionState extends m.State<ImageInteraction>
                         ),
                         onPressed: () async {
                           ws.navigatorKey.currentState?.pushNamed(
-                            (await ws
-                                        .navigatorKey.currentState
-                                        ?.pushNamed(
-                                            ws.RouteStringConstants
-                                                .interactiveViewer,
-                                            arguments: ws.PushArguments(
-                                                mediaMetadata:
-                                                    widget._mediaMetadata))
-                                    as ws.PushArguments)
+                            (await ws.navigatorKey.currentState?.pushNamed(
+                                    ws.RouteStringConstants.interactiveViewer,
+                                    arguments: ws.PushArguments(
+                                      mediaMetadata: widget._mediaMetadata,
+                                    )) as ws.PushArguments)
                                 .previousRoute!,
                             arguments: ws.PushArguments(
                               mediaMetadata: widget._mediaMetadata,
@@ -200,19 +219,20 @@ class _ImageInteractionState extends m.State<ImageInteraction>
               ),
             ),
           ),
-        if (_showExplanationAndDateText)
+        if (showExplanationAndDateText)
           m.Positioned.fill(
             child: m.Center(
               child: m.SizedBox(
-                width: _explanationBoxWidth,
+                width: explanationBoxWidth,
                 child: m.DecoratedBox(
                   decoration: m.BoxDecoration(
-                    color: m.Colors.black
-                        .withOpacity(_explanationBackgroundFadeAnimation.value),
+                    color: m.Colors.black.withOpacity(
+                      explanationBackgroundFadeAnimation.value,
+                    ),
                     borderRadius: a.boxBorderRadius,
                   ),
                   child: m.FadeTransition(
-                    opacity: _textFadeAnimation,
+                    opacity: textFadeAnimation,
                     child: m.Column(
                       mainAxisSize: m.MainAxisSize.min,
                       children: [
@@ -221,7 +241,7 @@ class _ImageInteractionState extends m.State<ImageInteraction>
                           child: m.Text(
                             widget._mediaMetadata.title,
                             textAlign: m.TextAlign.center,
-                            textScaleFactor: _titleScaleFactor,
+                            textScaler: m.TextScaler.linear(titleScaleFactor),
                           ),
                         ),
                         m.Padding(
@@ -243,12 +263,12 @@ class _ImageInteractionState extends m.State<ImageInteraction>
               ),
             ),
           ),
-        if (widget._showDate && _showExplanationAndDateText)
+        if (widget._showDate && showExplanationAndDateText)
           m.Positioned(
-            left: _dateInset,
-            top: _dateInset,
+            left: dateInset,
+            top: dateInset,
             child: m.FadeTransition(
-              opacity: _textFadeAnimation,
+              opacity: textFadeAnimation,
               child: m.Text(
                 s.dateStringFromDateTime(
                   dateTime: widget._mediaMetadata.date,
@@ -262,24 +282,4 @@ class _ImageInteractionState extends m.State<ImageInteraction>
       ],
     );
   }
-}
-
-class ImageInteraction extends m.StatefulWidget {
-  final bool _showDate;
-  final m.ValueNotifier<bool> _buttonBoxActive;
-  final mm.MediaMetadata _mediaMetadata;
-  final m.Widget _child;
-
-  @override
-  m.State<m.StatefulWidget> createState() => _ImageInteractionState();
-  const ImageInteraction({
-    super.key,
-    required bool showDate,
-    required m.ValueNotifier<bool> buttonBoxActive,
-    required mm.MediaMetadata mediaMetadata,
-    required m.Widget child,
-  })  : _showDate = showDate,
-        _buttonBoxActive = buttonBoxActive,
-        _mediaMetadata = mediaMetadata,
-        _child = child;
 }

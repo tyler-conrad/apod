@@ -6,6 +6,7 @@ import 'package:timezone/timezone.dart' as tz;
 import 'shared.dart' as s;
 import 'media_metadata_by_month.dart' as mmbm;
 
+/// NASA logo image.
 final m.Image nasaLogo = m.Image.asset(
   'assets/nasa_logo.png',
   alignment: m.Alignment.center,
@@ -14,12 +15,15 @@ final m.Image nasaLogo = m.Image.asset(
   height: double.infinity,
 );
 
+/// An exception for when a date string cannot be parsed.
 class ParseDateMatchException implements Exception {
   final String cause;
   ParseDateMatchException(this.cause);
 }
 
 final _dateRegExp = RegExp(r'(\d{4})\-(\d{2})-(\d{2})');
+
+/// Parse a date string into a [tz.TZDateTime] object.
 tz.TZDateTime parseDate({required String dateString}) {
   var match = _dateRegExp.firstMatch(dateString);
   if (match == null) {
@@ -32,16 +36,21 @@ tz.TZDateTime parseDate({required String dateString}) {
   return tz.TZDateTime(s.timeZone, year, month, day);
 }
 
+/// Default time zone.
 final tz.Location timeZone = tz.getLocation('America/Chicago');
 
+/// Get the current date and time in the default time zone.
 tz.TZDateTime timeZoneNow() {
   return tz.TZDateTime.now(timeZone);
 }
 
+/// Get the current date and time in the default time zone as a string.
 String yearMonthDayStringFromDateTime({required tz.TZDateTime dateTime}) {
   return dateTime.toString().substring(0, 10);
 }
 
+/// Generate pairs of dates separated by [offset] days between [startDate] and
+/// [endDate].
 Iterable<tz.TZDateTime> dateIterable(
     {required tz.TZDateTime startDate,
     required tz.TZDateTime endDate,
@@ -59,6 +68,7 @@ Iterable<tz.TZDateTime> dateIterable(
   yield endDate;
 }
 
+/// Split a list into chunks of size [chunkSize].
 List<List<T>> chunks<T>({required List<T> list, required int chunkSize}) {
   List<List<T>> chunks = [];
   for (var i = 0; i < list.length; i += chunkSize) {
@@ -72,6 +82,7 @@ List<List<T>> chunks<T>({required List<T> list, required int chunkSize}) {
   return chunks;
 }
 
+/// Convert a month index to a string.
 String _stringFromMonth(int month) {
   switch (month) {
     case 1:
@@ -103,6 +114,7 @@ String _stringFromMonth(int month) {
   }
 }
 
+/// Convert a day index to a string.
 String _stringFromDay(int day) {
   final String dayString = day.toString();
   final String lastDigit = dayString.substring(dayString.length - 1);
@@ -118,14 +130,17 @@ String _stringFromDay(int day) {
   }
 }
 
+/// Convert a date time to a string.
 String dateStringFromDateTime({required DateTime dateTime}) {
   return '${_stringFromMonth(dateTime.month)} ${_stringFromDay(dateTime.day)} ${dateTime.year}';
 }
 
+/// Convert a month and year to a string.
 String monthAndYearString({required mmbm.MonthAndYear monthAndYear}) {
   return '${_stringFromMonth(monthAndYear.month)} ${monthAndYear.year}';
 }
 
+/// A fixed length queue for storing the route history.
 class FixedLengthQueue<E> {
   final int maxLength;
   final c.Queue<E> queue = c.Queue();

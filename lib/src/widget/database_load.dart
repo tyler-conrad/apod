@@ -3,6 +3,26 @@ import 'package:flutter/material.dart' as m;
 import 'shared.dart' as ws;
 import 'appearance.dart' as a;
 
+/// A database loading widget that displays a message, a button, and a progress
+/// indicator.
+class DatabaseLoad extends m.StatefulWidget {
+  final String _message;
+  final String _buttonText;
+  final Stream<double> _progress;
+
+  @override
+  m.State<m.StatefulWidget> createState() => _DatabaseLoadState();
+
+  const DatabaseLoad({
+    super.key,
+    required String message,
+    required String buttonText,
+    required Stream<double> progress,
+  })  : _message = message,
+        _buttonText = buttonText,
+        _progress = progress;
+}
+
 class _DatabaseLoadState extends m.State<DatabaseLoad> {
   final m.ValueNotifier<double> _progressNotifier =
       m.ValueNotifier<double>(0.0);
@@ -83,22 +103,4 @@ class _DatabaseLoadState extends m.State<DatabaseLoad> {
       ),
     );
   }
-}
-
-class DatabaseLoad extends m.StatefulWidget {
-  final String _message;
-  final String _buttonText;
-  final Stream<double> _progress;
-
-  @override
-  m.State<m.StatefulWidget> createState() => _DatabaseLoadState();
-
-  const DatabaseLoad({
-    super.key,
-    required String message,
-    required String buttonText,
-    required Stream<double> progress,
-  })  : _message = message,
-        _buttonText = buttonText,
-        _progress = progress;
 }

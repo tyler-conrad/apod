@@ -10,6 +10,10 @@ import 'appearance.dart' as a;
 import 'image_interaction.dart' as ii;
 import 'home_screen.dart' as hs;
 
+/// Contains a foreground and background image for the slide show.
+///
+/// Used with a [m.ValueNotifier] to update the foreground and background images
+/// in the slide show.
 class SlideShowImageForegroundAndBackground {
   final m.FadeInImage foreground;
   final m.FadeInImage? background;
@@ -20,58 +24,77 @@ class SlideShowImageForegroundAndBackground {
   });
 }
 
+/// A slide show widget that displays images from the NASA APOD API.
+///
+/// The slide show displays images with a fade-in animation. The foreground and
+/// background image are displayed with a scale animation.
+class SlideShow extends m.StatefulWidget {
+  final bool _lookupByDateMode;
+  final hs.HomeScreenMenu? _homeScreenMenu;
+
+  @override
+  m.State<m.StatefulWidget> createState() => _SlideShowState();
+
+  const SlideShow(
+      {super.key,
+      required bool lookupByDateMode,
+      hs.HomeScreenMenu? homeScreenMenu})
+      : _lookupByDateMode = lookupByDateMode,
+        _homeScreenMenu = homeScreenMenu;
+}
+
 class _SlideShowState extends m.State<SlideShow>
     with m.TickerProviderStateMixin {
-  final Duration _imageScaleDuration = const Duration(
+  final Duration imageScaleDuration = const Duration(
     seconds: 10,
   );
-  final double _dateIconSize = 256.0;
-  final double _copyrightInset = 16.0;
+  static const double dateIconSize = 256.0;
+  static const double copyrightInset = 16.0;
 
-  late final m.AnimationController _foregroundScaleController;
-  late final m.Animation<double> _foregroundScaleAnimation;
+  late final m.AnimationController foregroundScaleController;
+  late final m.Animation<double> foregroundScaleAnimation;
 
-  late final m.AnimationController _backgroundScaleController;
-  late final m.Animation<double> _backgroundScaleAnimation;
+  late final m.AnimationController backgroundScaleController;
+  late final m.Animation<double> backgroundScaleAnimation;
 
-  late final m.AnimationController _copyrightFadeController;
-  late final m.Animation<double> _copyrightFadeAnimation;
+  late final m.AnimationController copyrightFadeController;
+  late final m.Animation<double> copyrightFadeAnimation;
 
-  final Iterator<mm.MediaMetadata> _randomImageIterator =
+  final Iterator<mm.MediaMetadata> randomImageIterator =
       c.controller.randomImage().iterator;
 
   late final m.ValueNotifier<SlideShowImageForegroundAndBackground>
-      _foregroundAndBackground;
+      foregroundAndBackground;
 
-  final m.ValueNotifier<String> _imageCopyright = m.ValueNotifier<String>(
+  final m.ValueNotifier<String> imageCopyright = m.ValueNotifier<String>(
     '',
   );
 
-  final m.ValueNotifier<bool> _animating = m.ValueNotifier<bool>(
+  final m.ValueNotifier<bool> animating = m.ValueNotifier<bool>(
     true,
   );
 
-  final m.ValueNotifier<bool> _buttonBoxActive = m.ValueNotifier(
+  final m.ValueNotifier<bool> buttonBoxActive = m.ValueNotifier(
     false,
   );
 
-  late final m.Widget _foreground;
+  late final m.Widget foreground;
 
   late mm.MediaMetadata currentMetadata;
 
-  bool _placeholderImageComplete = false;
+  bool placeholderImageComplete = false;
 
   @override
   void initState() {
     super.initState();
 
-    _randomImageIterator.moveNext();
-    currentMetadata = _randomImageIterator.current;
-    final String nextImageUrl = _randomImageIterator.current.hdUrl!;
+    randomImageIterator.moveNext();
+    currentMetadata = randomImageIterator.current;
+    final String nextImageUrl = randomImageIterator.current.hdUrl!;
 
-    _imageCopyright.value = '';
+    imageCopyright.value = '';
 
-    _foregroundAndBackground =
+    foregroundAndBackground =
         m.ValueNotifier<SlideShowImageForegroundAndBackground>(
       SlideShowImageForegroundAndBackground(
         foreground: ws.buildWidgetFillFadeInImage(
@@ -87,7 +110,7 @@ class _SlideShowState extends m.State<SlideShow>
                 if (mounted) {
                   setState(
                     () {
-                      _placeholderImageComplete = true;
+                      placeholderImageComplete = true;
                     },
                   );
                 }
@@ -98,99 +121,99 @@ class _SlideShowState extends m.State<SlideShow>
       ),
     );
 
-    _foregroundScaleController = m.AnimationController(
-      duration: _imageScaleDuration,
+    foregroundScaleController = m.AnimationController(
+      duration: imageScaleDuration,
       vsync: this,
     );
 
-    _foregroundScaleAnimation = m.Tween<double>(
+    foregroundScaleAnimation = m.Tween<double>(
       begin: 1.0,
       end: 1.1,
     ).animate(
       m.CurvedAnimation(
-        parent: _foregroundScaleController,
+        parent: foregroundScaleController,
         curve: m.Curves.easeIn,
       ),
     );
 
-    _foregroundScaleController.addStatusListener((status) {
+    foregroundScaleController.addStatusListener((status) {
       if (status == m.AnimationStatus.completed) {
-        _randomImageIterator.moveNext();
+        randomImageIterator.moveNext();
         setState(() {
-          currentMetadata = _randomImageIterator.current;
+          currentMetadata = randomImageIterator.current;
         });
-        _foregroundAndBackground.value = SlideShowImageForegroundAndBackground(
+        foregroundAndBackground.value = SlideShowImageForegroundAndBackground(
             foreground: ws.buildWidgetFillFadeInImage(
               placeholder: t.kTransparentImage,
               image: currentMetadata.hdUrl!,
             ),
-            background: _foregroundAndBackground.value.foreground);
-        _imageCopyright.value = currentMetadata.copyrightWithSymbol;
-        _foregroundScaleController.reset();
-        _foregroundScaleController.forward();
+            background: foregroundAndBackground.value.foreground);
+        imageCopyright.value = currentMetadata.copyrightWithSymbol;
+        foregroundScaleController.reset();
+        foregroundScaleController.forward();
       }
     });
 
-    _foregroundScaleController.forward();
+    foregroundScaleController.forward();
 
-    _backgroundScaleController = m.AnimationController(
-      duration: _imageScaleDuration,
+    backgroundScaleController = m.AnimationController(
+      duration: imageScaleDuration,
       vsync: this,
     );
 
-    _backgroundScaleAnimation = m.Tween<double>(
+    backgroundScaleAnimation = m.Tween<double>(
       begin: 1.1,
       end: 1.2,
     ).animate(
       m.CurvedAnimation(
-        parent: _backgroundScaleController,
+        parent: backgroundScaleController,
         curve: m.Curves.linear,
       ),
     );
 
-    _backgroundScaleController.addStatusListener(
+    backgroundScaleController.addStatusListener(
       (status) {
         if (status == m.AnimationStatus.completed) {
-          _backgroundScaleController.reset();
-          _backgroundScaleController.forward();
+          backgroundScaleController.reset();
+          backgroundScaleController.forward();
         }
       },
     );
 
-    _backgroundScaleController.forward();
+    backgroundScaleController.forward();
 
-    _copyrightFadeController = m.AnimationController(
+    copyrightFadeController = m.AnimationController(
       duration: const Duration(
         seconds: 5,
       ),
       vsync: this,
     );
-    _copyrightFadeAnimation = m.Tween<double>(
+    copyrightFadeAnimation = m.Tween<double>(
       begin: 0.0,
       end: 1.0,
     ).animate(
       m.CurvedAnimation(
-        parent: _copyrightFadeController,
+        parent: copyrightFadeController,
         curve: m.Curves.easeIn,
       ),
     );
-    _copyrightFadeController.addStatusListener(
+    copyrightFadeController.addStatusListener(
       (status) {
         if (status == m.AnimationStatus.completed) {
-          _copyrightFadeController.reverse();
+          copyrightFadeController.reverse();
         }
         if (status == m.AnimationStatus.dismissed) {
-          _copyrightFadeController.reset();
-          _copyrightFadeController.forward();
+          copyrightFadeController.reset();
+          copyrightFadeController.forward();
         }
       },
     );
-    _copyrightFadeController.forward();
+    copyrightFadeController.forward();
 
-    _foreground = m.ScaleTransition(
-      scale: _foregroundScaleAnimation,
+    foreground = m.ScaleTransition(
+      scale: foregroundScaleAnimation,
       child: m.ValueListenableBuilder<SlideShowImageForegroundAndBackground>(
-        valueListenable: _foregroundAndBackground,
+        valueListenable: foregroundAndBackground,
         builder: (
           m.BuildContext context,
           SlideShowImageForegroundAndBackground ssifgab,
@@ -204,13 +227,13 @@ class _SlideShowState extends m.State<SlideShow>
 
   @override
   void dispose() {
-    _buttonBoxActive.dispose();
-    _animating.dispose();
-    _imageCopyright.dispose();
-    _foregroundAndBackground.dispose();
-    _copyrightFadeController.dispose();
-    _backgroundScaleController.dispose();
-    _foregroundScaleController.dispose();
+    buttonBoxActive.dispose();
+    animating.dispose();
+    imageCopyright.dispose();
+    foregroundAndBackground.dispose();
+    copyrightFadeController.dispose();
+    backgroundScaleController.dispose();
+    foregroundScaleController.dispose();
     super.dispose();
   }
 
@@ -220,19 +243,19 @@ class _SlideShowState extends m.State<SlideShow>
     return m.GestureDetector(
       onTap: () {
         if (widget._homeScreenMenu == null) {
-          if (_animating.value) {
-            _animating.value = false;
-            _buttonBoxActive.value =
-                _placeholderImageComplete == true ? true : false;
-            _foregroundScaleController.stop();
-            _backgroundScaleController.stop();
-            _copyrightFadeController.stop();
+          if (animating.value) {
+            animating.value = false;
+            buttonBoxActive.value =
+                placeholderImageComplete == true ? true : false;
+            foregroundScaleController.stop();
+            backgroundScaleController.stop();
+            copyrightFadeController.stop();
           } else {
-            _animating.value = true;
-            _buttonBoxActive.value = false;
-            _foregroundScaleController.forward();
-            _backgroundScaleController.forward();
-            _copyrightFadeController.forward();
+            animating.value = true;
+            buttonBoxActive.value = false;
+            foregroundScaleController.forward();
+            backgroundScaleController.forward();
+            copyrightFadeController.forward();
           }
         }
       },
@@ -246,10 +269,10 @@ class _SlideShowState extends m.State<SlideShow>
             ),
           ),
           m.ScaleTransition(
-            scale: _backgroundScaleAnimation,
+            scale: backgroundScaleAnimation,
             child:
                 m.ValueListenableBuilder<SlideShowImageForegroundAndBackground>(
-              valueListenable: _foregroundAndBackground,
+              valueListenable: foregroundAndBackground,
               builder: (
                 m.BuildContext context,
                 SlideShowImageForegroundAndBackground ssifgab,
@@ -265,8 +288,8 @@ class _SlideShowState extends m.State<SlideShow>
             m.Positioned.fill(
               child: m.Center(
                 child: m.SizedBox(
-                  width: _dateIconSize,
-                  height: _dateIconSize,
+                  width: dateIconSize,
+                  height: dateIconSize,
                   child: a.buildBox(
                     theme: theme,
                     child: m.Padding(
@@ -294,9 +317,9 @@ class _SlideShowState extends m.State<SlideShow>
                             );
                           }
                         },
-                        child: m.Icon(
+                        child: const m.Icon(
                           m.Icons.calendar_today,
-                          size: _dateIconSize * 0.5,
+                          size: dateIconSize * 0.5,
                         ),
                       ),
                     ),
@@ -307,22 +330,22 @@ class _SlideShowState extends m.State<SlideShow>
           if (widget._homeScreenMenu == null && !widget._lookupByDateMode)
             ii.ImageInteraction(
               showDate: true,
-              buttonBoxActive: _buttonBoxActive,
+              buttonBoxActive: buttonBoxActive,
               mediaMetadata: currentMetadata,
-              child: _foreground,
+              child: foreground,
             ),
           m.ValueListenableBuilder<String>(
-            valueListenable: _imageCopyright,
+            valueListenable: imageCopyright,
             builder: (
               m.BuildContext context,
               String copyright,
               m.Widget? child,
             ) {
               return m.Positioned(
-                right: _copyrightInset,
-                bottom: _copyrightInset,
+                right: copyrightInset,
+                bottom: copyrightInset,
                 child: m.FadeTransition(
-                  opacity: _copyrightFadeAnimation,
+                  opacity: copyrightFadeAnimation,
                   child: m.Text(
                     copyright,
                   ),
@@ -335,19 +358,4 @@ class _SlideShowState extends m.State<SlideShow>
       ),
     );
   }
-}
-
-class SlideShow extends m.StatefulWidget {
-  final bool _lookupByDateMode;
-  final hs.HomeScreenMenu? _homeScreenMenu;
-
-  @override
-  m.State<m.StatefulWidget> createState() => _SlideShowState();
-
-  const SlideShow(
-      {super.key,
-      required bool lookupByDateMode,
-      hs.HomeScreenMenu? homeScreenMenu})
-      : _lookupByDateMode = lookupByDateMode,
-        _homeScreenMenu = homeScreenMenu;
 }

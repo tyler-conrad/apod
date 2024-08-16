@@ -4,9 +4,13 @@ import 'shared.dart' as ws;
 import 'appearance.dart' as a;
 import 'slideshow.dart' as s;
 
+/// A home screen menu widget that changes state based on the current route.
 class HomeScreenMenu extends m.StatelessWidget {
-  m.MaterialButton buildMenuButton(
-      {required String onPressedRoute, required String text}) {
+  /// Builds a menu button that changes the current route.
+  m.MaterialButton buildMenuButton({
+    required String onPressedRoute,
+    required String text,
+  }) {
     return m.MaterialButton(
       padding: a.edgeInsets24,
       onPressed: () => ws.navigatorKey.currentState?.pushNamed(
@@ -15,7 +19,7 @@ class HomeScreenMenu extends m.StatelessWidget {
       child: m.Text(
         text,
         style: const m.TextStyle(
-          fontSize: 24.0,
+          fontSize: 20.0,
         ),
       ),
     );

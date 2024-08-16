@@ -3,6 +3,9 @@ import 'package:equatable/equatable.dart' as eq;
 
 import 'media_metadata.dart' as mm;
 
+/// A class for storing the month and year.
+///
+/// This class is used to store the month and year of a [tz.TZDateTime] object.
 class MonthAndYear extends eq.Equatable {
   final int month;
   final int year;
@@ -15,6 +18,10 @@ class MonthAndYear extends eq.Equatable {
         year = dateTime.year;
 }
 
+/// A class for storing media metadata by month.
+///
+/// This class is used to store a list of [mm.MediaMetadata] objects for a given
+/// month and year.
 class MediaMetadataByMonth {
   final MonthAndYear monthAndYear;
   final List<mm.MediaMetadata> mediaMetadataForMonth;

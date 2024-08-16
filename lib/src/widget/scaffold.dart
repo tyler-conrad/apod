@@ -8,6 +8,23 @@ final m.ValueNotifier<d.DrawerState> _activeDrawerState =
 
 String title = 'Populate Database';
 
+/// A scaffold widget for the app.
+///
+/// The scaffold contains an app bar and a drawer and changes state based on the
+/// current route.
+class ApodScaffold extends m.StatefulWidget {
+  final m.Widget _child;
+  final double _leadingWidth;
+
+  @override
+  m.State<m.StatefulWidget> createState() => _ApodScaffoldState();
+
+  const ApodScaffold(
+      {super.key, required double leadingWidth, required m.Widget child})
+      : _leadingWidth = leadingWidth,
+        _child = child;
+}
+
 class _ApodScaffoldState extends m.State<ApodScaffold> with m.RouteAware {
   @override
   void didChangeDependencies() {
@@ -216,17 +233,4 @@ class _ApodScaffoldState extends m.State<ApodScaffold> with m.RouteAware {
       ),
     );
   }
-}
-
-class ApodScaffold extends m.StatefulWidget {
-  final m.Widget _child;
-  final double _leadingWidth;
-
-  @override
-  m.State<m.StatefulWidget> createState() => _ApodScaffoldState();
-
-  const ApodScaffold(
-      {super.key, required double leadingWidth, required m.Widget child})
-      : _leadingWidth = leadingWidth,
-        _child = child;
 }

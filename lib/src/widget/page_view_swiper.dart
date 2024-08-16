@@ -3,110 +3,125 @@ import 'package:flutter/material.dart' as m;
 import '../media_metadata.dart' as mm;
 import 'single_image_view.dart' as siv;
 
+/// A widget for swiping through a collection of images.
+///
+/// The user can swipe left and right to navigate through the images and can
+/// also use buttons to navigate through the images.
+class PageViewSwiper extends m.StatefulWidget {
+  final Iterable<mm.MediaMetadata> _mediaMetadataIterable;
+
+  @override
+  m.State<m.StatefulWidget> createState() => _PageViewSwiperState();
+
+  const PageViewSwiper(
+      {super.key, required Iterable<mm.MediaMetadata> mediaMetadataIterable})
+      : _mediaMetadataIterable = mediaMetadataIterable;
+}
+
 class _PageViewSwiperState extends m.State<PageViewSwiper>
     with m.TickerProviderStateMixin {
-  final double _navigationButtonSize = 128.0;
-  final double _buttonInset = 16.0;
-  final Duration _pageTransitionDuration = const Duration(
+  static const double navigationButtonSize = 128.0;
+  static const double buttonInset = 16.0;
+  final Duration pageTransitionDuration = const Duration(
     milliseconds: 500,
   );
 
-  late final Map<int, mm.MediaMetadata> _mediaMetadataFromIndex;
-  late final m.PageController _pageController;
+  late final Map<int, mm.MediaMetadata> mediaMetadataFromIndex;
+  late final m.PageController pageController;
 
-  final m.ValueNotifier<bool> _leftButtonVisible = m.ValueNotifier(true);
-  final m.ValueNotifier<bool> _rightButtonVisible = m.ValueNotifier(false);
+  final m.ValueNotifier<bool> leftButtonVisible = m.ValueNotifier(true);
+  final m.ValueNotifier<bool> rightButtonVisible = m.ValueNotifier(false);
 
-  late final m.AnimationController _leftButtonFadeController;
-  late final m.Animation<double> _leftButtonFadeAnimation;
+  late final m.AnimationController leftButtonFadeController;
+  late final m.Animation<double> leftButtonFadeAnimation;
 
-  late final m.AnimationController _rightButtonFadeController;
-  late final m.Animation<double> _rightButtonFadeAnimation;
+  late final m.AnimationController rightButtonFadeController;
+  late final m.Animation<double> rightButtonFadeAnimation;
 
-  int _pageIndex = 0;
-  bool _showLeftButton = true;
-  bool _showRightButton = false;
+  int pageIndex = 0;
+  bool showLeftButton = true;
+  bool showRightButton = false;
 
   @override
   void initState() {
     super.initState();
-    _mediaMetadataFromIndex = widget._mediaMetadataIterable.toList().asMap();
-    _pageController = m.PageController(initialPage: _pageIndex);
+    mediaMetadataFromIndex = widget._mediaMetadataIterable.toList().asMap();
+    pageController = m.PageController(initialPage: pageIndex);
 
-    _leftButtonFadeController = m.AnimationController(
+    leftButtonFadeController = m.AnimationController(
       duration: const Duration(seconds: 1),
       vsync: this,
     );
-    _leftButtonFadeAnimation = m.Tween<double>(
+    leftButtonFadeAnimation = m.Tween<double>(
       begin: 0.0,
       end: 1.0,
     ).animate(
       m.CurvedAnimation(
-        parent: _leftButtonFadeController,
+        parent: leftButtonFadeController,
         curve: m.Curves.linear,
       ),
     )..addListener(
         () {
-          if (_leftButtonFadeAnimation.value < 0.01) {
+          if (leftButtonFadeAnimation.value < 0.01) {
             setState(
               () {
-                _showLeftButton = false;
+                showLeftButton = false;
               },
             );
           } else {
             setState(
               () {
-                _showLeftButton = true;
+                showLeftButton = true;
               },
             );
           }
         },
       );
 
-    _rightButtonFadeController = m.AnimationController(
+    rightButtonFadeController = m.AnimationController(
       duration: const Duration(seconds: 1),
       vsync: this,
     );
-    _rightButtonFadeAnimation = m.Tween<double>(
+    rightButtonFadeAnimation = m.Tween<double>(
       begin: 0.0,
       end: 1.0,
     ).animate(
       m.CurvedAnimation(
-        parent: _rightButtonFadeController,
+        parent: rightButtonFadeController,
         curve: m.Curves.linear,
       ),
     )..addListener(
         () {
-          if (_rightButtonFadeAnimation.value < 0.01) {
+          if (rightButtonFadeAnimation.value < 0.01) {
             setState(
               () {
-                _showRightButton = false;
+                showRightButton = false;
               },
             );
           } else {
             setState(() {
-              _showRightButton = true;
+              showRightButton = true;
             });
           }
         },
       );
 
-    _leftButtonVisible.addListener(
+    leftButtonVisible.addListener(
       () {
-        if (_leftButtonVisible.value) {
-          _leftButtonFadeController.forward();
+        if (leftButtonVisible.value) {
+          leftButtonFadeController.forward();
         } else {
-          _leftButtonFadeController.reverse();
+          leftButtonFadeController.reverse();
         }
       },
     );
 
-    _rightButtonVisible.addListener(
+    rightButtonVisible.addListener(
       () {
-        if (_rightButtonVisible.value) {
-          _rightButtonFadeController.forward();
+        if (rightButtonVisible.value) {
+          rightButtonFadeController.forward();
         } else {
-          _rightButtonFadeController.reverse();
+          rightButtonFadeController.reverse();
         }
       },
     );
@@ -118,24 +133,24 @@ class _PageViewSwiperState extends m.State<PageViewSwiper>
     var appBarHeight = m.Scaffold.of(context).appBarMaxHeight!.toDouble();
     var stackHeight = screenSize.height - appBarHeight;
     return m.PageView.builder(
-      controller: _pageController,
+      controller: pageController,
       allowImplicitScrolling: true,
       onPageChanged: (index) {
         setState(() {
-          _pageIndex = index;
+          pageIndex = index;
         });
       },
       itemBuilder: (context, index) {
-        if (_pageIndex == 0) {
-          _leftButtonVisible.value = false;
+        if (pageIndex == 0) {
+          leftButtonVisible.value = false;
         } else {
-          _leftButtonVisible.value = true;
+          leftButtonVisible.value = true;
         }
 
-        if (_pageIndex == _mediaMetadataFromIndex.length - 1) {
-          _rightButtonVisible.value = false;
+        if (pageIndex == mediaMetadataFromIndex.length - 1) {
+          rightButtonVisible.value = false;
         } else {
-          _rightButtonVisible.value = true;
+          rightButtonVisible.value = true;
         }
 
         return m.Stack(
@@ -143,27 +158,27 @@ class _PageViewSwiperState extends m.State<PageViewSwiper>
             siv.SingleImageView(
               fillHeightSize: stackHeight,
               headerHeight: 0.0,
-              mediaMetadata: _mediaMetadataFromIndex[index]!,
+              mediaMetadata: mediaMetadataFromIndex[index]!,
             ),
-            if (_showLeftButton)
+            if (showLeftButton)
               m.Positioned(
-                left: _buttonInset,
-                top: stackHeight * 0.5 - _navigationButtonSize * 0.5,
+                left: buttonInset,
+                top: stackHeight * 0.5 - navigationButtonSize * 0.5,
                 child: m.FadeTransition(
-                  opacity: _leftButtonFadeAnimation,
+                  opacity: leftButtonFadeAnimation,
                   child: m.SizedBox(
-                    width: _navigationButtonSize,
-                    height: _navigationButtonSize,
+                    width: navigationButtonSize,
+                    height: navigationButtonSize,
                     child: m.IconButton(
-                      icon: m.Icon(
+                      icon: const m.Icon(
                         m.Icons.chevron_left,
-                        size: _navigationButtonSize * 0.5,
+                        size: navigationButtonSize * 0.5,
                       ),
-                      onPressed: _pageIndex == 0
+                      onPressed: pageIndex == 0
                           ? null
                           : () {
-                              _pageController.previousPage(
-                                duration: _pageTransitionDuration,
+                              pageController.previousPage(
+                                duration: pageTransitionDuration,
                                 curve: m.Curves.easeIn,
                               );
                             },
@@ -171,24 +186,24 @@ class _PageViewSwiperState extends m.State<PageViewSwiper>
                   ),
                 ),
               ),
-            if (_showRightButton)
+            if (showRightButton)
               m.Positioned(
-                right: _buttonInset,
-                top: stackHeight * 0.5 - _navigationButtonSize * 0.5,
+                right: buttonInset,
+                top: stackHeight * 0.5 - navigationButtonSize * 0.5,
                 child: m.FadeTransition(
-                  opacity: _rightButtonFadeAnimation,
+                  opacity: rightButtonFadeAnimation,
                   child: m.SizedBox(
-                    width: _navigationButtonSize,
-                    height: _navigationButtonSize,
+                    width: navigationButtonSize,
+                    height: navigationButtonSize,
                     child: m.IconButton(
-                      icon: m.Icon(
+                      icon: const m.Icon(
                         m.Icons.chevron_right,
-                        size: _navigationButtonSize * 0.5,
+                        size: navigationButtonSize * 0.5,
                       ),
-                      onPressed: index == _mediaMetadataFromIndex.length - 1
+                      onPressed: index == mediaMetadataFromIndex.length - 1
                           ? null
                           : () {
-                              _pageController.nextPage(
+                              pageController.nextPage(
                                 duration: const Duration(
                                   milliseconds: 500,
                                 ),
@@ -204,15 +219,4 @@ class _PageViewSwiperState extends m.State<PageViewSwiper>
       },
     );
   }
-}
-
-class PageViewSwiper extends m.StatefulWidget {
-  final Iterable<mm.MediaMetadata> _mediaMetadataIterable;
-
-  @override
-  m.State<m.StatefulWidget> createState() => _PageViewSwiperState();
-
-  const PageViewSwiper(
-      {super.key, required Iterable<mm.MediaMetadata> mediaMetadataIterable})
-      : _mediaMetadataIterable = mediaMetadataIterable;
 }

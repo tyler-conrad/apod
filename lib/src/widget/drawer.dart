@@ -2,6 +2,7 @@ import 'package:flutter/material.dart' as m;
 
 import 'shared.dart' as ws;
 
+/// Drawer states for the ApodDrawer.
 enum DrawerState {
   populateDatabase,
   homeScreen,
@@ -15,6 +16,10 @@ enum DrawerState {
   lookupByDate,
 }
 
+/// A drawer widget for the app.
+///
+/// The drawer contains buttons that navigate to different parts of the app.
+/// Handles changes between drawer states based on the current route.
 class ApodDrawer extends m.StatelessWidget {
   final DrawerState _activeDrawerState;
 
@@ -68,7 +73,7 @@ class ApodDrawer extends m.StatelessWidget {
               iconFromDrawerState(
                 drawerState: thisDrawerState,
               ),
-              size: 96.0,
+              size: 32.0,
             ),
           );
         },

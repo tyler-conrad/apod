@@ -1,70 +1,56 @@
 import 'package:flutter/material.dart' as m;
 
-import 'src/log.dart' as l;
-import 'src/widget/shared.dart' as ws;
-import 'src/controller.dart' as c;
-import 'src/widget/scaffold.dart' as s;
-import 'src/widget/populate_database_page.dart' as pdp;
-import 'src/widget/home_screen.dart' as hs;
-import 'src/widget/slideshow.dart' as ss;
-import 'src/widget/vertical_scroll_browser.dart' as vsb;
-import 'src/widget/page_view_swiper.dart' as pvs;
-import 'src/widget/gallery.dart' as g;
-import 'src/widget/single_image_view.dart' as siv;
-import 'src/widget/interactive_viewer.dart' as iv;
-import 'src/tz/timezone_stub.dart'
-    if (dart.library.io) 'src/tz/timezone_flutter.dart'
-    if (dart.library.js) 'src/tz/timezone_web.dart' as timezone;
+import 'apod.dart' as a;
 
 Future<void> main() async {
-  await timezone.setup();
-  await c.buildController();
+  await a.setup();
+  await a.buildController();
 
   m.runApp(
     m.MaterialApp(
       title: 'NASA Astronomy Picture of the Day',
       darkTheme: m.ThemeData.dark(),
       themeMode: m.ThemeMode.dark,
-      navigatorKey: ws.navigatorKey,
+      navigatorKey: a.navigatorKey,
       navigatorObservers: [
-        ws.routeObserver,
+        a.routeObserver,
       ],
-      initialRoute: ws.RouteStringConstants.populateDatabase,
+      initialRoute: a.RouteStringConstants.populateDatabase,
       onGenerateRoute: (
         m.RouteSettings settings,
       ) {
         var route = settings.name!;
-        l.logger.i('Switching to route: $route');
-        ws.routeHistory.push(route);
+        a.logger.i('Switching to route: $route');
+        a.routeHistory.push(route);
         switch (route) {
-          case ws.RouteStringConstants.populateDatabase:
+          case a.RouteStringConstants.populateDatabase:
             return m.MaterialPageRoute(
               builder: (m.BuildContext context) => const m.Material(
-                child: s.ApodScaffold(
+                child: a.ApodScaffold(
                   leadingWidth: 0.0,
-                  child: pdp.PopulateDatabasePage(),
+                  child: a.PopulateDatabasePage(),
                 ),
               ),
               settings: settings,
             );
 
-          case ws.RouteStringConstants.home:
+          case a.RouteStringConstants.home:
             return m.MaterialPageRoute(
               builder: (m.BuildContext context) => const m.Material(
-                child: s.ApodScaffold(
+                child: a.ApodScaffold(
                   leadingWidth: 64.0,
-                  child: hs.HomeScreen(),
+                  child: a.HomeScreen(),
                 ),
               ),
               settings: settings,
             );
 
-          case ws.RouteStringConstants.slideShow:
+          case a.RouteStringConstants.slideShow:
             return m.MaterialPageRoute(
               builder: (m.BuildContext context) => const m.Material(
-                child: s.ApodScaffold(
+                child: a.ApodScaffold(
                   leadingWidth: 128.0,
-                  child: ss.SlideShow(
+                  child: a.SlideShow(
                     lookupByDateMode: false,
                   ),
                 ),
@@ -72,66 +58,66 @@ Future<void> main() async {
               settings: settings,
             );
 
-          case ws.RouteStringConstants.browseEarliest:
+          case a.RouteStringConstants.browseEarliest:
             return m.MaterialPageRoute(
               builder: (m.BuildContext context) => m.Material(
-                child: s.ApodScaffold(
+                child: a.ApodScaffold(
                   leadingWidth: 128.0,
-                  child: vsb.VerticalScrollBrowser(
-                    mediaMetadataIterable: c.controller.fromEarliestForward(),
+                  child: a.VerticalScrollBrowser(
+                    mediaMetadataIterable: a.controller.fromEarliestForward(),
                   ),
                 ),
               ),
               settings: settings,
             );
 
-          case ws.RouteStringConstants.browseLatest:
+          case a.RouteStringConstants.browseLatest:
             return m.MaterialPageRoute(
               builder: (m.BuildContext context) => m.Material(
-                child: s.ApodScaffold(
+                child: a.ApodScaffold(
                   leadingWidth: 128.0,
-                  child: vsb.VerticalScrollBrowser(
-                    mediaMetadataIterable: c.controller.fromLatestBackward(),
+                  child: a.VerticalScrollBrowser(
+                    mediaMetadataIterable: a.controller.fromLatestBackward(),
                   ),
                 ),
               ),
               settings: settings,
             );
 
-          case ws.RouteStringConstants.swipeEarliest:
+          case a.RouteStringConstants.swipeEarliest:
             return m.MaterialPageRoute(
               builder: (m.BuildContext context) => m.Material(
-                child: s.ApodScaffold(
+                child: a.ApodScaffold(
                   leadingWidth: 128.0,
-                  child: pvs.PageViewSwiper(
-                    mediaMetadataIterable: c.controller.fromEarliestForward(),
+                  child: a.PageViewSwiper(
+                    mediaMetadataIterable: a.controller.fromEarliestForward(),
                   ),
                 ),
               ),
               settings: settings,
             );
 
-          case ws.RouteStringConstants.swipeLatest:
+          case a.RouteStringConstants.swipeLatest:
             return m.MaterialPageRoute(
               builder: (m.BuildContext context) => m.Material(
-                child: s.ApodScaffold(
+                child: a.ApodScaffold(
                   leadingWidth: 128.0,
-                  child: pvs.PageViewSwiper(
-                    mediaMetadataIterable: c.controller.fromLatestBackward(),
+                  child: a.PageViewSwiper(
+                    mediaMetadataIterable: a.controller.fromLatestBackward(),
                   ),
                 ),
               ),
               settings: settings,
             );
 
-          case ws.RouteStringConstants.galleryEarliest:
+          case a.RouteStringConstants.galleryEarliest:
             return m.MaterialPageRoute(
               builder: (m.BuildContext context) => m.Material(
-                child: s.ApodScaffold(
+                child: a.ApodScaffold(
                   leadingWidth: 128.0,
-                  child: g.Gallery(
-                    mediaMetadataByMonth: c.controller.mediaMetadataByMonth(
-                      mediaMetadataIterable: c.controller.fromEarliestForward(),
+                  child: a.Gallery(
+                    mediaMetadataByMonth: a.controller.mediaMetadataByMonth(
+                      mediaMetadataIterable: a.controller.fromEarliestForward(),
                     ),
                   ),
                 ),
@@ -139,14 +125,14 @@ Future<void> main() async {
               settings: settings,
             );
 
-          case ws.RouteStringConstants.galleryLatest:
+          case a.RouteStringConstants.galleryLatest:
             return m.MaterialPageRoute(
               builder: (m.BuildContext context) => m.Material(
-                child: s.ApodScaffold(
+                child: a.ApodScaffold(
                   leadingWidth: 128.0,
-                  child: g.Gallery(
-                    mediaMetadataByMonth: c.controller.mediaMetadataByMonth(
-                      mediaMetadataIterable: c.controller.fromLatestBackward(),
+                  child: a.Gallery(
+                    mediaMetadataByMonth: a.controller.mediaMetadataByMonth(
+                      mediaMetadataIterable: a.controller.fromLatestBackward(),
                     ),
                   ),
                 ),
@@ -154,12 +140,12 @@ Future<void> main() async {
               settings: settings,
             );
 
-          case ws.RouteStringConstants.lookupByDate:
+          case a.RouteStringConstants.lookupByDate:
             return m.MaterialPageRoute(
               builder: (m.BuildContext context) => const m.Material(
-                child: s.ApodScaffold(
+                child: a.ApodScaffold(
                   leadingWidth: 128.0,
-                  child: ss.SlideShow(
+                  child: a.SlideShow(
                     lookupByDateMode: true,
                   ),
                 ),
@@ -167,20 +153,20 @@ Future<void> main() async {
               settings: settings,
             );
 
-          case ws.RouteStringConstants.singleImageView:
+          case a.RouteStringConstants.singleImageView:
             return m.MaterialPageRoute(
               builder: (m.BuildContext context) => m.Material(
-                child: s.ApodScaffold(
+                child: a.ApodScaffold(
                   leadingWidth: 128.0,
                   child: m.Builder(
                     builder: (context) {
                       var screenSize = m.MediaQuery.of(context).size;
                       var appBarHeight =
                           m.Scaffold.of(context).appBarMaxHeight!;
-                      return siv.SingleImageView(
+                      return a.SingleImageView(
                         fillHeightSize: screenSize.height - appBarHeight,
                         headerHeight: 0.0,
-                        mediaMetadata: (settings.arguments as ws.PushArguments)
+                        mediaMetadata: (settings.arguments as a.PushArguments)
                             .mediaMetadata!,
                       );
                     },
@@ -190,20 +176,20 @@ Future<void> main() async {
               settings: settings,
             );
 
-          case ws.RouteStringConstants.interactiveViewer:
+          case a.RouteStringConstants.interactiveViewer:
             return m.MaterialPageRoute(
               builder: (m.BuildContext context) => m.Material(
-                child: iv.InteractiveViewer(
+                child: a.InteractiveViewer(
                   mediaMetadata:
-                      (settings.arguments as ws.PushArguments).mediaMetadata!,
-                  previousRoute: ws.routeHistory[0],
+                      (settings.arguments as a.PushArguments).mediaMetadata!,
+                  previousRoute: a.routeHistory[0],
                 ),
               ),
               settings: settings,
             );
 
           default:
-            throw ws.InvalidRouteException('Invalid route: ${settings.name}');
+            throw a.InvalidRouteException('Invalid route: ${settings.name}');
         }
       },
     ),

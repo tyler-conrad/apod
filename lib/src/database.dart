@@ -5,6 +5,7 @@ import 'package:timezone/timezone.dart' as tz;
 import 'media_metadata.dart' as mm;
 import 'shared.dart' as s;
 
+/// A class for storing the latest media metadata date.
 @h.HiveType(typeId: 2)
 class LatestMediaMetadata {
   @h.HiveField(0)
@@ -25,6 +26,7 @@ class LatestMediaMetadata {
   }
 }
 
+/// A type adapter for the [LatestMediaMetadata] class.
 class LatestMediaMetadataAdapter extends TypeAdapter<LatestMediaMetadata> {
   @override
   final int typeId = 2;
@@ -39,6 +41,7 @@ class LatestMediaMetadataAdapter extends TypeAdapter<LatestMediaMetadata> {
         latestDateTime: tz.TZDateTime.from(fields[0] as DateTime, s.timeZone));
   }
 
+  /// Write the [LatestMediaMetadata] object to the binary writer.
   @override
   void write(BinaryWriter writer, LatestMediaMetadata obj) {
     writer
@@ -58,6 +61,7 @@ class LatestMediaMetadataAdapter extends TypeAdapter<LatestMediaMetadata> {
           typeId == other.typeId;
 }
 
+/// A class for storing the default keys for the database.
 class DefaultKeys {
   final String latestMediaMetadataBoxName;
   final String latestMediaMetadataKeyName;
@@ -76,24 +80,31 @@ class DefaultKeys {
       required this.mediaMetadataBoxName});
 }
 
+/// An exception for when a key does not exist in the database.
 class NoDatabaseKeyException implements Exception {
   final String msg;
   const NoDatabaseKeyException(this.msg);
 }
 
+/// An exception for when the latest media metadata is not set.
 class LatestMediaMetadataNotSetException implements Exception {
   final String msg;
   const LatestMediaMetadataNotSetException(this.msg);
 }
 
+/// A class for storing the database.
 class Database {
   final DefaultKeys defaultKeys;
   final h.Box<mm.MediaMetadata> box;
 
+  Database({required this.defaultKeys, required this.box});
+
+  /// Whether the database contains the key.
   bool containsKey({required String key}) {
     return box.containsKey(key);
   }
 
+  /// Get the latest media metadata date and time.
   Future<tz.TZDateTime> latestMediaMetadataDateTime() async {
     final latestBox = await h.Hive.openBox<LatestMediaMetadata>(
         defaultKeys.latestMediaMetadataBoxName);
@@ -108,6 +119,7 @@ class Database {
     return latestMediaMetadata.latest;
   }
 
+  /// Insert the latest media metadata date and time.
   Future<Database> putLatestMediaMetadataDateTime(
       {required tz.TZDateTime latest}) async {
     var latestBox =
@@ -118,6 +130,7 @@ class Database {
     return this;
   }
 
+  /// Get the media metadata from the database based on [dateTime].
   mm.MediaMetadata fromDateTime({required tz.TZDateTime dateTime}) {
     var dateString = s.yearMonthDayStringFromDateTime(dateTime: dateTime);
     if (!containsKey(key: dateString)) {
@@ -127,16 +140,19 @@ class Database {
     return box.get(dateString)!;
   }
 
+  /// Insert the media metadata into the database.
   Future<Database> put({required mm.MediaMetadata metadata}) async {
     await box.put(
         s.yearMonthDayStringFromDateTime(dateTime: metadata.date), metadata);
     return this;
   }
 
+  /// Close the database.
   Future<void> close() async {
     await box.close();
   }
 
+  /// Build the database.
   static Future<Database> build() async {
     h.Hive.registerAdapter(LatestMediaMetadataAdapter());
     h.Hive.registerAdapter(mm.MediaTypeAdapter());
@@ -151,6 +167,4 @@ class Database {
         box: await h.Hive.openBox<mm.MediaMetadata>(
             defaultKeys.mediaMetadataBoxName));
   }
-
-  Database({required this.defaultKeys, required this.box});
 }

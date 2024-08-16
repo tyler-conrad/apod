@@ -5,11 +5,23 @@ import '../controller.dart' as c;
 import 'database_load.dart' as dl;
 import 'shared.dart' as ws;
 
+/// The strategy for populating the database.
 enum PopulateDatabasePageStrategy {
   uninitialized,
   needsInitialLoad,
   needsUpdate,
   populated
+}
+
+/// An initial loading page that populates the database.
+///
+/// The database is populated with images from the metadata from the
+/// NASA APOD API.
+class PopulateDatabasePage extends m.StatefulWidget {
+  @override
+  m.State<PopulateDatabasePage> createState() => _PopulateDatabasePageState();
+
+  const PopulateDatabasePage({super.key});
 }
 
 class _PopulateDatabasePageState extends m.State<PopulateDatabasePage> {
@@ -20,6 +32,12 @@ class _PopulateDatabasePageState extends m.State<PopulateDatabasePage> {
   @override
   void initState() {
     super.initState();
+
+    Future.delayed(const Duration(seconds: 1)).then((_) async {
+      final strategy = await getStrategy();
+      populationStrategy.value = strategy;
+    });
+
     populationStrategy.addListener(() {
       if (populationStrategy.value == PopulateDatabasePageStrategy.populated) {
         ws.navigatorKey.currentState?.pushNamed(
@@ -78,19 +96,4 @@ class _PopulateDatabasePageState extends m.State<PopulateDatabasePage> {
       },
     );
   }
-
-  _PopulateDatabasePageState() {
-    Future.delayed(const Duration(seconds: 1)).then((_) {
-      getStrategy().then((strategy) {
-        populationStrategy.value = strategy;
-      });
-    });
-  }
-}
-
-class PopulateDatabasePage extends m.StatefulWidget {
-  @override
-  m.State<PopulateDatabasePage> createState() => _PopulateDatabasePageState();
-
-  const PopulateDatabasePage({super.key});
 }

@@ -9,14 +9,17 @@ import 'media_metadata.dart' as mm;
 import 'shared.dart' as s;
 import 'database.dart' as db;
 
+/// Decode a JSON object with a Map as the root.
 Map<String, dynamic> _decodeJsonMap({required http.Response resp}) {
   return convert.jsonDecode(convert.utf8.decode(resp.bodyBytes));
 }
 
+/// Decode a JSON object with a List as the root.
 List<dynamic> _decodeJsonList({required http.Response resp}) {
   return convert.jsonDecode(convert.utf8.decode(resp.bodyBytes));
 }
 
+/// Generate pairs of dates separated by 1 day from a list of dates.
 Iterable<List<tz.TZDateTime>> datePairIterable(
     {required List<tz.TZDateTime> dateTimes}) sync* {
   if (dateTimes.isEmpty) {
@@ -39,6 +42,7 @@ Iterable<List<tz.TZDateTime>> datePairIterable(
   }
 }
 
+// A class for storing the current date and the next date.
 class NowAndFutureDay {
   final tz.TZDateTime now = s.timeZoneNow();
   late final tz.TZDateTime futureDay;
@@ -56,6 +60,8 @@ class NowAndFutureDay {
   }
 }
 
+/// A class for storing a stream of media metadata and the number of media
+/// metadata objects.
 class MediaMetadataAfterDate {
   final Stream<mm.MediaMetadata> stream;
   final int numMediaMetadata;
@@ -64,6 +70,10 @@ class MediaMetadataAfterDate {
       {required this.stream, required this.numMediaMetadata});
 }
 
+/// A client for fetching media metadata from the APOD API.
+///
+/// The client can fetch media metadata from the database populated on first
+/// launch.
 class Client {
   static const int numMediaMetadataPerCall = 100;
   static const scheme = 'http';
@@ -73,6 +83,7 @@ class Client {
 
   final retry.RetryClient client;
 
+  /// Generate a list of URIs for fetching media metadata including images.
   Iterable<Uri> uriIterable({required tz.TZDateTime startDate}) sync* {
     var uriList = datePairIterable(dateTimes: [
       ...s.dateIterable(
@@ -99,6 +110,7 @@ class Client {
     }
   }
 
+  /// Add media metadata to the database on date change.
   Future<void> addMediaMetadataOnDateChange(
       {required db.Database database, int dayOffset = 1}) async {
     NowAndFutureDay nafd = NowAndFutureDay(dayOffset: dayOffset);
@@ -144,6 +156,7 @@ class Client {
     }
   }
 
+  /// Fetch all media metadata after a given date.
   MediaMetadataAfterDate allMediaMetadataAfterDate(
       {required tz.TZDateTime date}) {
     var allMediaMetadataStream = _allMediaMetadataAfterDateStream(date: date);
@@ -153,6 +166,10 @@ class Client {
     );
   }
 
+  /// Build a client.
+  ///
+  /// The client is built with a [retry.RetryClient] that retries requests with
+  /// a delay of 5 seconds.
   static Client build() {
     return Client(
         client: retry.RetryClient(http.Client(),

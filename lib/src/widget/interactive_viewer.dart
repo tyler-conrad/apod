@@ -4,8 +4,11 @@ import 'package:transparent_image/transparent_image.dart' as t;
 import 'shared.dart' as ws;
 import '../media_metadata.dart' as mm;
 
+/// A widget for displaying an image with interaction options.
+///
+/// Uses [m.InteractiveViewer] to allow the user to zoom in on the image.
 class InteractiveViewer extends m.StatelessWidget {
-  final double _closeIconInset = 16.0;
+  static const _closeIconInset = 16.0;
   final mm.MediaMetadata _mediaMetadata;
   final String _previousRoute;
 

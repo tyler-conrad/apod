@@ -3,6 +3,7 @@ import 'package:timezone/timezone.dart' as tz;
 
 import 'shared.dart' as s;
 
+/// An enum for the type of media.
 @h.HiveType(typeId: 1)
 enum MediaType {
   @h.HiveField(0)
@@ -11,6 +12,7 @@ enum MediaType {
   video,
 }
 
+/// A type adapter for the [MediaType] enum.
 class MediaTypeAdapter extends h.TypeAdapter<MediaType> {
   @override
   final int typeId = 1;
@@ -27,6 +29,7 @@ class MediaTypeAdapter extends h.TypeAdapter<MediaType> {
     }
   }
 
+  /// Write the [MediaType] object to the binary writer.
   @override
   void write(h.BinaryWriter writer, MediaType obj) {
     switch (obj) {
@@ -50,6 +53,7 @@ class MediaTypeAdapter extends h.TypeAdapter<MediaType> {
           typeId == other.typeId;
 }
 
+/// A class for storing media metadata.
 @h.HiveType(typeId: 0)
 class MediaMetadata {
   @h.HiveField(0)
@@ -67,6 +71,7 @@ class MediaMetadata {
   @h.HiveField(6)
   final MediaType mediaType;
 
+  /// Get the copyright with the © symbol.
   String get copyrightWithSymbol {
     if (copyright == null) {
       return '';
@@ -74,10 +79,12 @@ class MediaMetadata {
     return '\u00A9$copyright';
   }
 
+  /// Get the date as a [tz.TZDateTime] object.
   tz.TZDateTime get date {
     return tz.TZDateTime.from(dateTime, s.timeZone);
   }
 
+  /// Create a [MediaMetadata] object from a JSON map.
   factory MediaMetadata.fromJson(Map<String, dynamic> metadata) {
     var dateTime = s.parseDate(dateString: metadata['date']);
     return MediaMetadata(
@@ -92,6 +99,7 @@ class MediaMetadata {
             : MediaType.video);
   }
 
+  /// Create a [MediaMetadata] object from a Hive box.
   MediaMetadata(
       {required this.title,
       required this.dateTime,
@@ -102,6 +110,7 @@ class MediaMetadata {
       required this.mediaType});
 }
 
+/// A type adapter for the [MediaMetadata] class.
 class MediaMetadataAdapter extends h.TypeAdapter<MediaMetadata> {
   @override
   final int typeId = 0;

@@ -5,10 +5,16 @@ import '../shared.dart' as s;
 import '../media_metadata_by_month.dart' as mmbm;
 import 'thumbnail.dart' as t;
 
+/// A gallery widget that displays media metadata in a grid.
 class Gallery extends m.StatelessWidget {
   final int _thumbnailsPerRow = 5;
   final double _headerHeight = 48.0;
   late final Map<int, mmbm.MediaMetadataByMonth> _mediaMetadataByMonthFromIndex;
+
+  Gallery({
+    super.key,
+    required Iterable<mmbm.MediaMetadataByMonth> mediaMetadataByMonth,
+  }) : _mediaMetadataByMonthFromIndex = mediaMetadataByMonth.toList().asMap();
 
   @override
   m.Widget build(m.BuildContext context) {
@@ -65,11 +71,5 @@ class Gallery extends m.StatelessWidget {
         );
       },
     );
-  }
-
-  Gallery(
-      {super.key,
-      required Iterable<mmbm.MediaMetadataByMonth> mediaMetadataByMonth}) {
-    _mediaMetadataByMonthFromIndex = mediaMetadataByMonth.toList().asMap();
   }
 }

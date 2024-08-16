@@ -9,39 +9,61 @@ import '../media_metadata.dart' as mm;
 import 'appearance.dart' as a;
 import 'image_interaction.dart' as ii;
 
+/// A widget for displaying a single image.
+///
+/// The image is displayed with a spinner while it is loading and is displayed
+/// with a fade-in animation. It can be tapped to display the explanation and
+/// date. The image can be tapped again to hide the explanation and date.
+class SingleImageView extends m.StatefulWidget {
+  final double? _fillHeightSize;
+  final double _headerHeight;
+  final mm.MediaMetadata _mediaMetadata;
+
+  @override
+  m.State<m.StatefulWidget> createState() => _SingleImageViewState();
+  const SingleImageView({
+    super.key,
+    required double headerHeight,
+    required mm.MediaMetadata mediaMetadata,
+    double? fillHeightSize,
+  })  : _fillHeightSize = fillHeightSize,
+        _headerHeight = headerHeight,
+        _mediaMetadata = mediaMetadata;
+}
+
 class _SingleImageViewState extends m.State<SingleImageView>
     with m.SingleTickerProviderStateMixin {
-  final double _spinnerSize = 256.0;
-  final double _copyrightInset = 16.0;
+  final double spinnerSize = 256.0;
+  final double copyrightInset = 16.0;
 
-  final m.ValueNotifier<bool> _buttonBoxActive = m.ValueNotifier(false);
-  final m.ValueNotifier<bool> _imageLoaded = m.ValueNotifier(false);
+  final m.ValueNotifier<bool> buttonBoxActive = m.ValueNotifier(false);
+  final m.ValueNotifier<bool> imageLoaded = m.ValueNotifier(false);
 
-  late final m.AnimationController _fadeInController;
-  late final m.Animation<double> _fadeInAnimation;
+  late final m.AnimationController fadeInController;
+  late final m.Animation<double> fadeInAnimation;
 
   @override
   void initState() {
     super.initState();
-    _fadeInController = m.AnimationController(
+    fadeInController = m.AnimationController(
       duration: const Duration(seconds: 1),
       vsync: this,
     );
 
-    _fadeInAnimation = m.Tween<double>(
+    fadeInAnimation = m.Tween<double>(
       begin: 0.0,
       end: 1.0,
     ).animate(
       m.CurvedAnimation(
-        parent: _fadeInController,
+        parent: fadeInController,
         curve: m.Curves.easeIn,
       ),
     );
 
-    _imageLoaded.addListener(
+    imageLoaded.addListener(
       () {
-        if (_imageLoaded.value) {
-          _fadeInController.forward();
+        if (imageLoaded.value) {
+          fadeInController.forward();
         }
       },
     );
@@ -49,9 +71,9 @@ class _SingleImageViewState extends m.State<SingleImageView>
 
   @override
   void dispose() {
-    _buttonBoxActive.dispose();
-    _imageLoaded.dispose();
-    _fadeInController.dispose();
+    buttonBoxActive.dispose();
+    imageLoaded.dispose();
+    fadeInController.dispose();
     super.dispose();
   }
 
@@ -75,7 +97,7 @@ class _SingleImageViewState extends m.State<SingleImageView>
       m.ImageStreamListener(
         (info, syncCall) {
           if (mounted) {
-            _imageLoaded.value = true;
+            imageLoaded.value = true;
           }
           return completer.complete(info.image);
         },
@@ -95,20 +117,20 @@ class _SingleImageViewState extends m.State<SingleImageView>
           child: m.Center(
             child: sk.SpinKitFadingCircle(
               color: theme.highlightColor,
-              size: _spinnerSize,
+              size: spinnerSize,
             ),
           ),
         ),
         m.GestureDetector(
           onTap: () {
-            if (_imageLoaded.value) {
-              _buttonBoxActive.value = !_buttonBoxActive.value;
+            if (imageLoaded.value) {
+              buttonBoxActive.value = !buttonBoxActive.value;
             }
           },
           child: ii.ImageInteraction(
             mediaMetadata: widget._mediaMetadata,
             showDate: false,
-            buttonBoxActive: _buttonBoxActive,
+            buttonBoxActive: buttonBoxActive,
             child: m.FutureBuilder<ui.Image>(
               future: completer.future,
               builder:
@@ -133,7 +155,7 @@ class _SingleImageViewState extends m.State<SingleImageView>
                     height = screenSize.width / imageAspect;
                   }
                   return m.FadeTransition(
-                    opacity: _fadeInAnimation,
+                    opacity: fadeInAnimation,
                     child: m.Center(
                       child: m.SizedBox(
                         width: width,
@@ -154,10 +176,10 @@ class _SingleImageViewState extends m.State<SingleImageView>
           ),
         ),
         m.Positioned(
-          right: _copyrightInset,
-          bottom: _copyrightInset,
+          right: copyrightInset,
+          bottom: copyrightInset,
           child: m.FadeTransition(
-            opacity: _fadeInAnimation,
+            opacity: fadeInAnimation,
             child: m.Text(
               widget._mediaMetadata.copyrightWithSymbol,
               style: m.TextStyle(
@@ -169,21 +191,4 @@ class _SingleImageViewState extends m.State<SingleImageView>
       ],
     );
   }
-}
-
-class SingleImageView extends m.StatefulWidget {
-  final double? _fillHeightSize;
-  final double _headerHeight;
-  final mm.MediaMetadata _mediaMetadata;
-
-  @override
-  m.State<m.StatefulWidget> createState() => _SingleImageViewState();
-  const SingleImageView({
-    super.key,
-    required double headerHeight,
-    required mm.MediaMetadata mediaMetadata,
-    double? fillHeightSize,
-  })  : _fillHeightSize = fillHeightSize,
-        _headerHeight = headerHeight,
-        _mediaMetadata = mediaMetadata;
 }
