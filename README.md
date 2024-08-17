@@ -43,11 +43,11 @@ queryParameters: {
 },
 ```
 
-As currently written the code only supports running the `apod-api` server locally
-which results in the Astronomy Picture of the Day website being indirectly
-scraped returning JSON to be used by the app.  It takes around three minutes to
-populate the database for the app using the local server.  See below for the
-local server setup instructions.
+As currently written the code only supports running the `apod-api` server
+locally which results in the Astronomy Picture of the Day website being
+indirectly scraped returning JSON to be used by the app.  It takes around three
+minutes to populate the database for the app using the local server.  See below
+for the local server setup instructions.
 
 ### Timezone Configuration
 
